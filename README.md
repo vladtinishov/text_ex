@@ -11,4 +11,4 @@
 <p>Вид фильров</p>
 <img src="image2.png">
 
-<p>Использованная тестовая <a href="products.sql">таблица</a></p>
+<p>Для заполнения таблицы использовать команду php artisan db:seed --class=ProductsSeeder</p>
