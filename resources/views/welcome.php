@@ -81,18 +81,23 @@
             </tr>
         </tbody>
         <tbody v-if="searchingProductsKey">
-            <tr v-for="product in searchingProducts">
-            <th scope="row">{{product.id}}</th>
-            <td>{{product.product_name}}</td>
-            <td>{{product.articul}}</td>
-            <td>{{product.category}}</td>
-            <td>{{product.weight}}</td>
-            <td>{{product.price}}</td>
-            <td>{{product.status}}</td>
-            <td>{{product.created_at }}</td>
+            <tr v-for="product in pageList">
+                <th scope="row">{{product.id}}</th>
+                <td>{{product.product_name}}</td>
+                <td>{{product.articul}}</td>
+                <td>{{product.category}}</td>
+                <td>{{product.weight}}</td>
+                <td>{{product.price}}</td>
+                <td>{{product.status}}</td>
+                <td>{{product.created_at }}</td>
             </tr>
         </tbody>
     </table>
+    <div class="nav_buttons">
+        <button class="btn btn-primary to-main" @click="toBack" v-if="searchingProductsKey"><-</button>
+        <button class="btn btn-primary to-main" @click="toNext" v-if="searchingProductsKey">-></button>
+    </div>
+    <br>
     <button v-if="backKey" @click="back" type="button" class="btn btn-primary to-main">На главную</button>
 </div>
 

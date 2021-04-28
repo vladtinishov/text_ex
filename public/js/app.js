@@ -1930,16 +1930,48 @@ Vue.component('example-component', __webpack_require__(/*! ./components/ExampleC
       sql: '',
       expList: [],
       filters: [],
-      allFilters: {
-          
-      },
+      allFilters: {},
+      pageList: [],
+      pageCount: 0  
   },
   mounted: function(){
       axios.get('/products').then(data => {
           this.products = data.data;
+          console.log(data.data[1])
       });
   },
   methods: {
+      pagination: function(prod){
+        let pagArrProd = [];
+        let count = 0;
+          for(let i = 0; i < prod.length; i++){
+            let innerArrProd = [];
+            for(let j = 0; j < 10; j++){
+              if(prod[count] != undefined){
+                innerArrProd.push(prod[count]);
+                count++;
+              }
+            }
+            if(innerArrProd.length != 0){
+              pagArrProd.push(innerArrProd);
+            }
+          }
+        return pagArrProd;
+      },
+      toBack: function(){
+        if(this.pageCount != 0){
+          this.pageCount--;
+          this.pageList = this.searchingProducts[this.pageCount]
+          console.log(this.pageList);;
+        }
+      },
+      toNext: function(){
+        if(this.pageCount < this.searchingProducts.length - 1){
+          this.pageCount++;
+          this.pageList = this.searchingProducts[this.pageCount]
+          console.log(this.pageList);
+        }
+      },
       openForm: function(param){
           this.formKey = true;
           this.searchingData.param = param;
@@ -1982,9 +2014,12 @@ Vue.component('example-component', __webpack_require__(/*! ./components/ExampleC
                               }
                           })
               .then(data => {
-                  this.searchingProducts = data.data;
-                  console.log(data.data);
+                  this.searchingProducts = this.pagination(data.data);
+                  console.log(this.pagination(data.data))
+                  this.pageCount = 0;
+                  this.pageList = this.searchingProducts[this.pageCount];
               });
+          
           this.getFilters();
       },
       deleteFilter: function(prop){
