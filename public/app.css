@@ -49,3 +49,52 @@ span{
     padding: 0;
     margin: 0;
 }
+
+.create_filter ul li{
+    display: flex;
+    margin-top: 10px;
+}
+.create_filter select{
+    margin-left: 10px;
+}
+.create_filter input{
+    margin-left: 10px;
+}
+.create_filter{
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    padding: 20px;
+    background: rgba(.1,.1,.1,.1);
+    box-sizing: border-box;
+}
+.inner_create_filter{
+    position: relative;
+    border-radius: 10px;
+    background: white;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+}
+.close_create_filter{
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    cursor: pointer;
+    font-weight: 600;
+}
+.create_filter_span{
+    background-color: white;
+    color: rgb(0, 119, 255);
+    padding: 5px;
+}
+.deleteFilter{
+    width: 28px;
+    height: 28px;
+    text-align: center;
+}
+.filter_data{
+    background-color: white;
+    color: rgb(0, 119, 255);
+    margin-left: 10px;
+}

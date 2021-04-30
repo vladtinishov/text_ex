@@ -1911,18 +1911,26 @@ Vue.component('example-component', __webpack_require__(/*! ./components/ExampleC
       searchingProductsKey: false,
       searchingData: {},
       searchingProducts: [],
-      
+      createFilter: false,
 
       filterData: {
-          id: {val: 0, exp: '='},
-          product_name: {val: '', exp: '='},
-          articul: {val: '', exp: '='},
-          category: {val: '', exp: '='},
-          weight: {val: 0, exp: '='},
-          price: {val: 0, exp: '='},
-          status: {val: '', exp: '='},
+          id: {val: 0, exp: 'no'},
+          product_name: {val: '', exp: 'no'},
+          articul: {val: '', exp: 'no'},
+          category: {val: '', exp: 'no'},
+          weight: {val: 0, exp: 'no'},
+          price: {val: 0, exp: 'no'},
+          status: {val: '', exp: 'no'},
       },
-
+      inputKey: {
+        id: false,
+        product_name: false,
+        articul: false,
+        category: false, 
+        weight: false,
+        price: false,
+        status: false,
+      },
       //new filter
       nameOfParam: '',
       valueOfParam: 0,
@@ -1932,7 +1940,9 @@ Vue.component('example-component', __webpack_require__(/*! ./components/ExampleC
       filters: [],
       allFilters: {},
       pageList: [],
-      pageCount: 0  
+      pageCount: 0,
+      filterInput: false,
+      
   },
   mounted: function(){
       axios.get('/products').then(data => {
@@ -1989,7 +1999,56 @@ Vue.component('example-component', __webpack_require__(/*! ./components/ExampleC
       closeFrom: function(){
           this.formKey = false
       },
-      
+      setExpC: function(key){
+          let selValue = document.getElementById(key + '_sel').value;
+          if(selValue == 'no') this.inputKey[key] = false;
+          else{
+              this.filterData[key].exp = selValue;
+              this.inputKey[key] = true;
+          }
+          console.log(this.inputKey[key])
+      },
+      setValue: function(){
+          //keys
+          this.backKey = true;
+          // this.formKey = false;
+          this.allProductsKey = false;
+          this.searchingProductsKey = true;
+          this.closeCreateFilter();
+          //
+
+          let inputValue;
+          for(let key in this.inputKey){
+              if(this.inputKey[key] === true){
+                  inputValue = document.getElementById(key + '_in').value;
+                  this.filterData[key].val = inputValue;
+                  console.log(inputValue)
+              }
+          }
+          this.query();
+          this.getFilters();
+
+          for(let filter in this.allFilters){
+            if(this.inputKey.hasOwnProperty(filter)){
+                  this.inputKey[filter] = true;
+            }
+        }
+        document.getElementById('id_in').value = '1';
+      },
+      query: function(){
+        let fd = this.filterData;
+        console.log(fd);
+        axios.get('/products/search', {params: {
+                                sql: fd
+                            }
+                        })
+            .then(data => {
+                this.searchingProducts = this.pagination(data.data);
+                console.log(this.pagination(data.data))
+                this.pageCount = 0;
+                this.pageList = this.searchingProducts[this.pageCount];
+            });
+      },
       search: function(){
           //keys
           this.backKey = true;
@@ -1999,31 +2058,22 @@ Vue.component('example-component', __webpack_require__(/*! ./components/ExampleC
           //
 
           let value = document.getElementById('value').value;
-          let param = this.searchingData.param;
 
           //new filter
           this.valueOfParam = value;
           this.filterData[this.nameOfParam].val = this.valueOfParam;
           this.filterData[this.nameOfParam].exp = this.exp;
           console.log(this.sql);
-          let sqlQuery = this.sql;
-          let fd = this.filterData;
-          console.log(fd);
-          axios.get('/products/search', {params: {
-                                  sql: fd
-                              }
-                          })
-              .then(data => {
-                  this.searchingProducts = this.pagination(data.data);
-                  console.log(this.pagination(data.data))
-                  this.pageCount = 0;
-                  this.pageList = this.searchingProducts[this.pageCount];
-              });
+
+          this.query();
           
           this.getFilters();
       },
       deleteFilter: function(prop){
           this.filterData[prop].val = 0;
+          document.getElementById(prop + '_in').value = '';
+          document.getElementById(prop + '_sel').value = 'no';
+          this.inputKey[prop] = false;
       },
       getFilters: function(){
           Object.assign(this.allFilters, this.filterData)
@@ -2032,7 +2082,25 @@ Vue.component('example-component', __webpack_require__(/*! ./components/ExampleC
                   delete this.allFilters[key];
               }
           }
-          
+      },
+      closeCreateFilter: function(){
+          this.createFilter = false;
+      },
+      openCreateFilter: function(){
+          this.createFilter = true;
+          // if(this.allFilters != []){
+          //     for(let filter in this.allFilters){
+          //         if(this.inputKey.hasOwnProperty(filter)){
+          //             this.inputKey[filter] = true;
+          //             // document.getElementById(filter + '_in').value = '1';
+          //             if(document.getElementById(filter + '_in') != null){
+          //               document.getElementById(filter + '_in').value = '1';
+          //             }
+          //         }
+          //     }
+              
+          // }
+          // document.getElementById('id_in').value = '1';
       },
       back: function(){
           this.backKey = false;

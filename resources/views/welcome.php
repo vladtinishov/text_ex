@@ -22,15 +22,39 @@
                 <button type="button" class="btn btn-success" @click="setExp('>')">></button>
                 <button type="button" class="btn btn-danger" @click="setExp('=')">=</button>
                 <button type="button" class="btn btn-warning" @click="setExp('<')"><</button>
-                <br>
-                <ul>
-                    <li v-for="value, key in allFilters">
-                        <span @click="deleteFilter(key)">del</span> {{key}} {{value.exp}} {{value.val}}
-                    </li>
-                </ul>
             </div>
         </div>
     </div>
+    <div v-if="createFilter" class="create_filter">
+        <div class="inner_create_filter">
+            <div @click="closeCreateFilter" class="close_create_filter">x</div>
+            <ul>
+                <li v-for="value, key in filterData">
+                    {{key}}
+                    <select v-bind:value="value.exp" @click="setExpC(key)" class="exp_list" v-bind:id="key + '_sel'">
+                        <option value="no">нет</option>
+                        <option value=">">больше</option>
+                        <option value="=">равно</option>
+                        <option value="<">меньше</option>
+                    </select>
+                    <input v-bind:value="filterData[key].val" v-if="inputKey[key]" type="text" v-bind:id="key + '_in'">
+                </li>
+            </ul>
+            <button class="btn btn-primary to-main" @click="setValue">Искать</button>
+            <ul>
+                <li v-for="value, key in allFilters">
+                    <span class="deleteFilter" @click="deleteFilter(key)">
+                        x
+                    </span> 
+                    <span class="filter_data">{{key}} {{value.exp}} {{value.val}}</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <span class="create_filter_span" @click="openCreateFilter">
+        Создать фильтр 
+        <i class="fa fa-filter" aria-hidden="true"></i>
+    </span>
     <table class="table table-bordered table-hover">
         <thead>
             <tr>
